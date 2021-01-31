@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>力扣第445题-分发饼干🤡 | 潘泽彬的博客</title>
+<title>力扣第888题-公平的糖果棒交换 | 潘泽彬的博客</title>
 <meta name="description" content="">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,15 +80,22 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">力扣第445题-分发饼干🤡</h2>
+          <h2 class="post-title">力扣第888题-公平的糖果棒交换</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2021-01-31</span>
+            <span><i class="icon-calendar-outline"></i> 2021-02-01</span>
             
               <span>
                 <i class="icon-pricetags-outline"></i>
                 
-                  <a href="https://ICE-ZE.github.io/tag/7Pa_MDrRc/">
-                    贪心算法
+                  <a href="https://ICE-ZE.github.io/tag/ItzGTF_vZ/">
+                    哈希
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="https://ICE-ZE.github.io/tag/e1yWaO--8/">
+                    二分查找
                     
                   </a>
                 
@@ -96,23 +103,87 @@
             
           </div>
           <div class="post-content">
-            <h2 id="贪心算法">贪心算法</h2>
-<p>题目给出了每个孩子的胃口值和每个饼干能提供的胃口值，当饼干提供的胃口值大于孩子的胃口值时就能喂饱这个孩子，一个孩子只能吃一块饼干，题目要求给出能够喂饱的孩子数。<br>
-这道题使用贪心算法进行解决，将给定的两个数组进行排序，如果最小的饼干喂不饱当前胃口值最小的孩子，那么就不可能喂饱接下来的孩子们，所以跳过这块饼干。当找到一张能喂饱这个孩子的饼干就可以跳到这个孩子。循环一次孩子和饼干，当孩子喂完了或者没有饼干了，就可以得出可以喂饱的孩子数了。C++实现代码。</p>
+            <h1 id="方法一-暴力">方法一： 暴力</h1>
 <pre><code class="language-C++">class Solution {
 public:
-    int findContentChildren(vector&lt;int&gt;&amp; g, vector&lt;int&gt;&amp; s) {
-        sort(g.begin(),g.end());    //孩子胃口值排序
-        sort(s.begin(),s.end());    //饼干大小排序
-        int child = 0,biscuit = 0;  //当前遍历到的孩子数和饼干数
-        int ans = 0;                //喂饱的孩子数
-        while (child &lt; g.size() &amp;&amp; biscuit &lt; s.size()){
-            if (g[child] &lt;= s[biscuit]){    //如果当前饼干可以喂饱孩子
-                ans++;                      //孩子数加一
-                child++;                    //跳过这个孩子
-                biscuit++;                  //跳过这块饼干
-            } else{                         //如果当前饼干不可以喂饱孩子
-                biscuit++;                  //跳过这块饼干
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B) {
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        vector&lt;int&gt; ans;
+        for (int i = 0; i &lt; A.size(); ++i) {
+            for (int j = 0; j &lt; B.size(); ++j) {
+                if ((sumA - A[i] + B[j]) == (sumB - B[j] + A[i])){
+                    ans.push_back(A[i]);
+                    ans.push_back(B[j]);
+                    break;
+                }
+            }
+            if (ans.size() &gt; 0){
+                break;
+            }
+        }
+        return ans;
+    }
+};
+</code></pre>
+<h1 id="方法二哈希">方法二：哈希</h1>
+<pre><code class="language-C+=">class Solution {
+public:
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B) {
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        int difference = (sumA - sumB);
+        set&lt;int&gt; candySet(A.begin(),A.end());
+        vector&lt;int&gt; ans;
+            for (int &amp; i : B) {
+                int x = i + difference/2;
+                if (candySet.count(x)){
+                    ans.push_back(x);
+                    ans.push_back(i);
+                    break;
+                }
+            }
+        return ans;
+    }
+};
+</code></pre>
+<h1 id="方法三二分查找">方法三：二分查找</h1>
+<pre><code class="language-C++">class Solution {
+public:
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B){
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        sort(B.begin(),B.end());
+        int difference = (sumA - sumB);
+        vector&lt;int&gt; ans;
+        for (int &amp; i : A) {
+            int left = 0, right = B.size() - 1;
+            while (left &lt; right){
+                int mid = (right + left) / 2;
+                if (B[mid] &gt; (i + difference/2)){
+                    right = mid - 1;
+                } else if(B[mid] &lt; (i + difference/2)){
+                    left = mid + 1;
+                } else{
+                    ans.push_back(i);
+                    ans.push_back(B[mid]);
+                    return ans;
+                }
             }
         }
         return ans;
@@ -125,9 +196,9 @@ public:
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://ICE-ZE.github.io/post/li-kou-di-839-ti-xiang-si-zi-fu-chuan-zu/">
+            <a class="purple-link" href="https://ICE-ZE.github.io/post/li-kou/">
               <h3 class="post-title">
-                下一篇：力扣第839题-相似字符串组🤡
+                下一篇：力扣第445题-分发饼干🤡
               </h3>
             </a>
           </div>
