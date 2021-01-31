@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>力扣第888题-公平的糖果棒交换 | 潘泽彬的博客</title>
+<meta name="description" content="">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ICE-ZE.github.io/favicon.ico?v=1612117543273">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://ICE-ZE.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://ICE-ZE.github.io">
+        <img class="avatar" src="https://ICE-ZE.github.io/images/avatar.png?v=1612117543273" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://ICE-ZE.github.io">
+        <h1 class="site-title">潘泽彬的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">力扣第888题-公平的糖果棒交换</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2021-02-01</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://ICE-ZE.github.io/tag/ItzGTF_vZ/">
+                    哈希
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="https://ICE-ZE.github.io/tag/e1yWaO--8/">
+                    二分查找
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="方法一-暴力">方法一： 暴力</h1>
+<pre><code class="language-C++">class Solution {
+public:
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B) {
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        vector&lt;int&gt; ans;
+        for (int i = 0; i &lt; A.size(); ++i) {
+            for (int j = 0; j &lt; B.size(); ++j) {
+                if ((sumA - A[i] + B[j]) == (sumB - B[j] + A[i])){
+                    ans.push_back(A[i]);
+                    ans.push_back(B[j]);
+                    break;
+                }
+            }
+            if (ans.size() &gt; 0){
+                break;
+            }
+        }
+        return ans;
+    }
+};
+</code></pre>
+<h1 id="方法二哈希">方法二：哈希</h1>
+<pre><code class="language-C+=">class Solution {
+public:
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B) {
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        int difference = (sumA - sumB);
+        set&lt;int&gt; candySet(A.begin(),A.end());
+        vector&lt;int&gt; ans;
+            for (int &amp; i : B) {
+                int x = i + difference/2;
+                if (candySet.count(x)){
+                    ans.push_back(x);
+                    ans.push_back(i);
+                    break;
+                }
+            }
+        return ans;
+    }
+};
+</code></pre>
+<h1 id="方法三二分查找">方法三：二分查找</h1>
+<pre><code class="language-C++">class Solution {
+public:
+    vector&lt;int&gt; fairCandySwap(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B){
+        int sumA = 0,sumB = 0;
+        for (int i : A) {
+            sumA += i;
+        }
+        for (int i : B) {
+            sumB += i;
+        }
+        sort(B.begin(),B.end());
+        int difference = (sumA - sumB);
+        vector&lt;int&gt; ans;
+        for (int &amp; i : A) {
+            int left = 0, right = B.size() - 1;
+            while (left &lt; right){
+                int mid = (right + left) / 2;
+                if (B[mid] &gt; (i + difference/2)){
+                    right = mid - 1;
+                } else if(B[mid] &lt; (i + difference/2)){
+                    left = mid + 1;
+                } else{
+                    ans.push_back(i);
+                    ans.push_back(B[mid]);
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+};
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://ICE-ZE.github.io/post/li-kou/">
+              <h3 class="post-title">
+                下一篇：力扣第445题-分发饼干🤡
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan"></div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ICE-ZE.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
